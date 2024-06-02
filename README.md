@@ -1,127 +1,67 @@
-Select2
-=======
-[![Build Status][travis-ci-image]][travis-ci-status]
-[![cdnjs](https://img.shields.io/cdnjs/v/select2.svg)][cdnjs]
-[![jsdelivr](https://data.jsdelivr.com/v1/package/npm/select2/badge)][jsdelivr]
+# jQuery
 
-Select2 is a jQuery-based replacement for select boxes. It supports searching,
-remote data sets, and pagination of results.
+> jQuery is a fast, small, and feature-rich JavaScript library.
 
-To get started, checkout examples and documentation at
-https://select2.org/
+For information on how to get started and how to use jQuery, please see [jQuery's documentation](http://api.jquery.com/).
+For source files and issues, please visit the [jQuery repo](https://github.com/jquery/jquery).
 
-Use cases
----------
-* Enhancing native selects with search.
-* Enhancing native selects with a better multi-select interface.
-* Loading data from JavaScript: easily load items via AJAX and have them
-  searchable.
-* Nesting optgroups: native selects only support one level of nesting. Select2
-  does not have this restriction.
-* Tagging: ability to add new items on the fly.
-* Working with large, remote datasets: ability to partially load a dataset based
-  on the search term.
-* Paging of large datasets: easy support for loading more pages when the results
-  are scrolled to the end.
-* Templating: support for custom rendering of results and selections.
+If upgrading, please see the [blog post for 3.4.1](https://blog.jquery.com/2019/05/01/jquery-3-4-1-triggering-focus-events-in-ie-and-finding-root-elements-in-ios-10/). This includes notable differences from the previous version and a more readable changelog.
 
-Browser compatibility
----------------------
-* IE 8+
-* Chrome 8+
-* Firefox 10+
-* Safari 3+
-* Opera 10.6+
+## Including jQuery
 
-Usage
------
-You can source Select2 directly from a CDN like [JSDliver][jsdelivr] or
-[CDNJS][cdnjs], [download it from this GitHub repo][releases], or use one of
-the integrations below.
+Below are some of the most common ways to include jQuery.
 
-Integrations
-------------
-Third party developers have created plugins for platforms which allow Select2 to be integrated more natively and quickly. For many platforms, additional plugins are not required because Select2 acts as a standard `<select>` box.
+### Browser
 
-Plugins
+#### Script tag
 
-* [Django]
-  - [django-autocomplete-light]
-  - [django-easy-select2]
-  - [django-select2]
-* [Drupal] - [drupal-select2]
-* [Meteor] - [meteor-select2]
-* [Ruby on Rails][ruby-on-rails] - [select2-rails]
-* [Wicket] - [wicketstuff-select2]
-* [Yii 2][yii2] - [yii2-widget-select2]
-* [Angularjs][angularjs] - [mdr-angular-select2]
+```html
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+```
 
-Themes
+#### Babel
 
-- [Bootstrap 3][bootstrap3] - [select2-bootstrap-theme]
-- [Bootstrap 4][bootstrap4] - [select2-bootstrap4-theme]
-- [Flat UI][flat-ui] - [select2-flat-theme]
-- [Metro UI][metro-ui] - [select2-metro]
+[Babel](http://babeljs.io/) is a next generation JavaScript compiler. One of the features is the ability to use ES6/ES2015 modules now, even though browsers do not yet support this feature natively.
 
-Missing an integration? Modify this `README` and make a pull request back here to Select2 on GitHub.
+```js
+import $ from "jquery";
+```
 
-Internationalization (i18n)
----------------------------
-Select2 supports multiple languages by simply including the right language JS
-file (`dist/js/i18n/it.js`, `dist/js/i18n/nl.js`, etc.) after
-`dist/js/select2.js`.
+#### Browserify/Webpack
 
-Missing a language? Just copy `src/js/select2/i18n/en.js`, translate it, and
-make a pull request back to Select2 here on GitHub.
+There are several ways to use [Browserify](http://browserify.org/) and [Webpack](https://webpack.github.io/). For more information on using these tools, please refer to the corresponding project's documention. In the script, including jQuery will usually look like this...
 
-Documentation
--------------
-The documentation for Select2 is available
-[through GitHub Pages][documentation] and is located within the [separate `select2/docs` repository][documentation-repository].
+```js
+var $ = require("jquery");
+```
 
-Community
----------
-You can find out about the different ways to get in touch with the Select2
-community at the [Select2 community page][community].
+#### AMD (Asynchronous Module Definition)
 
-Copyright and license
----------------------
-The license is available within the repository in the [LICENSE][license] file.
+AMD is a module format built for the browser. For more information, we recommend [require.js' documentation](http://requirejs.org/docs/whyamd.html).
 
-[cdnjs]: http://www.cdnjs.com/libraries/select2
-[community]: https://select2.org/getting-help
-[documentation]: https://select2.org
-[documentation-repository]: https://github.com/select2/docs
-[freenode]: https://freenode.net/
-[jsdelivr]: https://www.jsdelivr.com/package/npm/select2
-[license]: LICENSE.md
-[releases]: https://github.com/select2/select2/releases
-[travis-ci-image]: https://img.shields.io/travis/select2/select2/master.svg
-[travis-ci-status]: https://travis-ci.org/select2/select2
+```js
+define(["jquery"], function($) {
 
-[angularjs]: https://angularjs.org/
-[bootstrap3]: https://getbootstrap.com/
-[bootstrap4]: https://getbootstrap.com/
-[django]: https://www.djangoproject.com/
-[django-autocomplete-light]: https://github.com/yourlabs/django-autocomplete-light
-[django-easy-select2]: https://github.com/asyncee/django-easy-select2
-[django-select2]: https://github.com/applegrew/django-select2
-[drupal]: https://www.drupal.org/
-[drupal-select2]: https://www.drupal.org/project/select2
-[flat-ui]: http://designmodo.github.io/Flat-UI/
-[mdr-angular-select2]: https://github.com/modulr/mdr-angular-select2
-[meteor]: https://www.meteor.com/
-[meteor-select2]: https://github.com/nate-strauser/meteor-select2
-[metro-ui]: http://metroui.org.ua/
-[select2-metro]: http://metroui.org.ua/select2.html
-[ruby-on-rails]: http://rubyonrails.org/
-[select2-bootstrap-theme]: https://github.com/select2/select2-bootstrap-theme
-[select2-bootstrap4-theme]: https://github.com/ttskch/select2-bootstrap4-theme
-[select2-flat-theme]: https://github.com/techhysahil/select2-Flat_Theme
-[select2-rails]: https://github.com/argerim/select2-rails
-[vue.js]: http://vuejs.org/
-[select2-vue]: http://vuejs.org/examples/select2.html
-[wicket]: https://wicket.apache.org/
-[wicketstuff-select2]: https://github.com/wicketstuff/core/tree/master/select2-parent
-[yii2]: http://www.yiiframework.com/
-[yii2-widget-select2]: https://github.com/kartik-v/yii2-widget-select2
+});
+```
+
+### Node
+
+To include jQuery in [Node](nodejs.org), first install with npm.
+
+```sh
+npm install jquery
+```
+
+For jQuery to work in Node, a window with a document is required. Since no such window exists natively in Node, one can be mocked by tools such as [jsdom](https://github.com/tmpvar/jsdom). This can be useful for testing purposes.
+
+```js
+require("jsdom").env("", function(err, window) {
+	if (err) {
+		console.error(err);
+		return;
+	}
+
+	var $ = require("jquery")(window);
+});
+```
