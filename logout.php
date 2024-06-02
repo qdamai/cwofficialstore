@@ -1,8 +1,8 @@
-<?php
-session_start();
-// hapus session
-session_destroy();
+<?php  
 
-// alihkan ke halaman login (index.php) dan berikan alert = 2
-header('Location: index.php');
+include 'koneksi.php';
+session_start();
+if (session_destroy()) {
+	header("location: ./");
+}
 ?>
