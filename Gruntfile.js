@@ -1,312 +1,262 @@
-// AdminLTE Gruntfile
-module.exports = function (grunt) { // jshint ignore:line
-  'use strict';
+const sass = require('node-sass');
+
+module.exports = function (grunt) {
+  // Full list of files that must be included by RequireJS
+  includes = [
+    'jquery.select2',
+    'almond',
+
+    'jquery-mousewheel' // shimmed for non-full builds
+  ];
+
+  fullIncludes = [
+    'jquery',
+
+    'select2/compat/containerCss',
+    'select2/compat/dropdownCss',
+
+    'select2/compat/initSelection',
+    'select2/compat/inputData',
+    'select2/compat/matcher',
+    'select2/compat/query',
+
+    'select2/dropdown/attachContainer',
+    'select2/dropdown/stopPropagation',
+
+    'select2/selection/stopPropagation'
+  ].concat(includes);
+
+  var i18nModules = [];
+  var i18nPaths = {};
+
+  var i18nFiles = grunt.file.expand({
+    cwd: 'src/js'
+  }, 'select2/i18n/*.js');
+
+  var testFiles = grunt.file.expand('tests/**/*.html');
+  var testUrls = testFiles.map(function (filePath) {
+    return 'http://localhost:9999/' + filePath;
+  });
+
+  var testBuildNumber = "unknown";
+
+  if (process.env.TRAVIS_JOB_ID) {
+    testBuildNumber = "travis-" + process.env.TRAVIS_JOB_ID;
+  } else {
+    var currentTime = new Date();
+
+    testBuildNumber = "manual-" + currentTime.getTime();
+  }
+
+  for (var i = 0; i < i18nFiles.length; i++) {
+    var file = i18nFiles[i];
+    var name = file.split('.')[0];
+
+    i18nModules.push({
+      name: name
+    });
+
+    i18nPaths[name] = '../../' + name;
+  }
+
+  var minifiedBanner = '/*! Select2 <%= package.version %> | https://github.com/select2/select2/blob/master/LICENSE.md */';
 
   grunt.initConfig({
-    pkg   : grunt.file.readJSON('package.json'),
-    watch : {
-      less : {
-        // Compiles less files upon saving
-        files: ['build/less/*.less'],
-        tasks: ['less:development', 'less:production', 'replace', 'notify:less']
-      },
-      js   : {
-        // Compile js files upon saving
-        files: ['build/js/*.js'],
-        tasks: ['js', 'notify:js']
-      },
-      skins: {
-        // Compile any skin less files upon saving
-        files: ['build/less/skins/*.less'],
-        tasks: ['less:skins', 'less:minifiedSkins', 'notify:less']
-      }
-    },
-    // Notify end of tasks
-    notify: {
-      less: {
-        options: {
-          title  : 'AdminLTE',
-          message: 'LESS finished running'
-        }
-      },
-      js  : {
-        options: {
-          title  : 'AdminLTE',
-          message: 'JS bundler finished running'
-        }
-      }
-    },
-    // 'less'-task configuration
-    // This task will compile all less files upon saving to create both AdminLTE.css and AdminLTE.min.css
-    less  : {
-      // Development not compressed
-      development  : {
-        files: {
-          // compilation.css  :  source.less
-          'dist/css/AdminLTE.css'                     : 'build/less/AdminLTE.less',
-          // AdminLTE without plugins
-          'dist/css/alt/AdminLTE-without-plugins.css' : 'build/less/AdminLTE-without-plugins.less',
-          // Separate plugins
-          'dist/css/alt/AdminLTE-select2.css'         : 'build/less/select2.less',
-          'dist/css/alt/AdminLTE-fullcalendar.css'    : 'build/less/fullcalendar.less',
-          'dist/css/alt/AdminLTE-bootstrap-social.css': 'build/less/bootstrap-social.less'
-        }
-      },
-      // Production compressed version
-      production   : {
-        options: {
-          compress: true
-        },
-        files  : {
-          // compilation.css  :  source.less
-          'dist/css/AdminLTE.min.css'                     : 'build/less/AdminLTE.less',
-          // AdminLTE without plugins
-          'dist/css/alt/AdminLTE-without-plugins.min.css' : 'build/less/AdminLTE-without-plugins.less',
-          // Separate plugins
-          'dist/css/alt/AdminLTE-select2.min.css'         : 'build/less/select2.less',
-          'dist/css/alt/AdminLTE-fullcalendar.min.css'    : 'build/less/fullcalendar.less',
-          'dist/css/alt/AdminLTE-bootstrap-social.min.css': 'build/less/bootstrap-social.less'
-        }
-      },
-      // Non minified skin files
-      skins        : {
-        files: {
-          'dist/css/skins/skin-blue.css'        : 'build/less/skins/skin-blue.less',
-          'dist/css/skins/skin-black.css'       : 'build/less/skins/skin-black.less',
-          'dist/css/skins/skin-yellow.css'      : 'build/less/skins/skin-yellow.less',
-          'dist/css/skins/skin-green.css'       : 'build/less/skins/skin-green.less',
-          'dist/css/skins/skin-red.css'         : 'build/less/skins/skin-red.less',
-          'dist/css/skins/skin-purple.css'      : 'build/less/skins/skin-purple.less',
-          'dist/css/skins/skin-blue-light.css'  : 'build/less/skins/skin-blue-light.less',
-          'dist/css/skins/skin-black-light.css' : 'build/less/skins/skin-black-light.less',
-          'dist/css/skins/skin-yellow-light.css': 'build/less/skins/skin-yellow-light.less',
-          'dist/css/skins/skin-green-light.css' : 'build/less/skins/skin-green-light.less',
-          'dist/css/skins/skin-red-light.css'   : 'build/less/skins/skin-red-light.less',
-          'dist/css/skins/skin-purple-light.css': 'build/less/skins/skin-purple-light.less',
-          'dist/css/skins/_all-skins.css'       : 'build/less/skins/_all-skins.less'
-        }
-      },
-      // Skins minified
-      minifiedSkins: {
-        options: {
-          compress: true
-        },
-        files  : {
-          'dist/css/skins/skin-blue.min.css'        : 'build/less/skins/skin-blue.less',
-          'dist/css/skins/skin-black.min.css'       : 'build/less/skins/skin-black.less',
-          'dist/css/skins/skin-yellow.min.css'      : 'build/less/skins/skin-yellow.less',
-          'dist/css/skins/skin-green.min.css'       : 'build/less/skins/skin-green.less',
-          'dist/css/skins/skin-red.min.css'         : 'build/less/skins/skin-red.less',
-          'dist/css/skins/skin-purple.min.css'      : 'build/less/skins/skin-purple.less',
-          'dist/css/skins/skin-blue-light.min.css'  : 'build/less/skins/skin-blue-light.less',
-          'dist/css/skins/skin-black-light.min.css' : 'build/less/skins/skin-black-light.less',
-          'dist/css/skins/skin-yellow-light.min.css': 'build/less/skins/skin-yellow-light.less',
-          'dist/css/skins/skin-green-light.min.css' : 'build/less/skins/skin-green-light.less',
-          'dist/css/skins/skin-red-light.min.css'   : 'build/less/skins/skin-red-light.less',
-          'dist/css/skins/skin-purple-light.min.css': 'build/less/skins/skin-purple-light.less',
-          'dist/css/skins/_all-skins.min.css'       : 'build/less/skins/_all-skins.less'
-        }
-      }
-    },
+    package: grunt.file.readJSON('package.json'),
 
-    // Uglify task info. Compress the js files.
-    uglify: {
-      options   : {
-        mangle : true,
-        output: {
-          comments: 'some'
-        },
-      },
-      production: {
-        files: {
-          'dist/js/adminlte.min.js': ['dist/js/adminlte.js']
-        }
-      }
-    },
-
-    // Concatenate JS Files
     concat: {
-      options: {
-        separator: '\n\n',
-        banner   : '/*! AdminLTE app.js\n'
-        + '* ================\n'
-        + '* Main JS application file for AdminLTE v2. This file\n'
-        + '* should be included in all pages. It controls some layout\n'
-        + '* options and implements exclusive AdminLTE plugins.\n'
-        + '*\n'
-        + '* @author Colorlib\n'
-        + '* @support <https://github.com/ColorlibHQ/AdminLTE/issues>\n'
-        + '* @version <%= pkg.version %>\n'
-        + '* @repository <%= pkg.repository.url %>\n'
-        + '* @license MIT <http://opensource.org/licenses/MIT>\n'
-        + '*/\n\n'
-        + '// Make sure jQuery has been loaded\n'
-        + 'if (typeof jQuery === \'undefined\') {\n'
-        + 'throw new Error(\'AdminLTE requires jQuery\')\n'
-        + '}\n\n'
-      },
-      dist   : {
-        src : [
-          'build/js/BoxRefresh.js',
-          'build/js/BoxWidget.js',
-          'build/js/ControlSidebar.js',
-          'build/js/DirectChat.js',
-          'build/js/PushMenu.js',
-          'build/js/TodoList.js',
-          'build/js/Tree.js',
-          'build/js/Layout.js',
-        ],
-        dest: 'dist/js/adminlte.js'
-      }
-    },
-
-    // Replace image paths in AdminLTE without plugins
-    replace: {
-      withoutPlugins   : {
-        src         : ['dist/css/alt/AdminLTE-without-plugins.css'],
-        dest        : 'dist/css/alt/AdminLTE-without-plugins.css',
-        replacements: [
-          {
-            from: '../img',
-            to  : '../../img'
-          }
-        ]
-      },
-      withoutPluginsMin: {
-        src         : ['dist/css/alt/AdminLTE-without-plugins.min.css'],
-        dest        : 'dist/css/alt/AdminLTE-without-plugins.min.css',
-        replacements: [
-          {
-            from: '../img',
-            to  : '../../img'
-          }
-        ]
-      }
-    },
-
-    // Build the documentation files
-    includes: {
-      build: {
-        src    : ['*.html'], // Source files
-        dest   : 'documentation/', // Destination directory
-        flatten: true,
-        cwd    : 'documentation/build',
+      'dist': {
         options: {
-          silent     : true,
-          includePath: 'documentation/build/include'
+          banner: grunt.file.read('src/js/wrapper.start.js'),
+        },
+        src: [
+          'dist/js/select2.js',
+          'src/js/wrapper.end.js'
+        ],
+        dest: 'dist/js/select2.js'
+      },
+      'dist.full': {
+        options: {
+          banner: grunt.file.read('src/js/wrapper.start.js'),
+        },
+        src: [
+          'dist/js/select2.full.js',
+          'src/js/wrapper.end.js'
+        ],
+        dest: 'dist/js/select2.full.js'
+      }
+    },
+
+    connect: {
+      tests: {
+        options: {
+          base: '.',
+          hostname: '127.0.0.1',
+          port: 9999
         }
       }
     },
 
-    // Optimize images
-    image: {
-      dynamic: {
-        files: [
-          {
-            expand: true,
-            cwd   : 'build/img/',
-            src   : ['**/*.{png,jpg,gif,svg,jpeg}'],
-            dest  : 'dist/img/'
-          }
-        ]
+    uglify: {
+      'dist': {
+        src: 'dist/js/select2.js',
+        dest: 'dist/js/select2.min.js',
+        options: {
+          banner: minifiedBanner
+        }
+      },
+      'dist.full': {
+        src: 'dist/js/select2.full.js',
+        dest: 'dist/js/select2.full.min.js',
+        options: {
+          banner: minifiedBanner
+        }
       }
     },
 
-    // Validate JS code
+    qunit: {
+      all: {
+        options: {
+          urls: testUrls
+        }
+      }
+    },
+
     jshint: {
       options: {
-        jshintrc: 'build/js/.jshintrc'
+        jshintrc: true,
+        reporterOutput: ''
       },
-      grunt  : {
+      code: {
+        src: ['src/js/**/*.js']
+      },
+      tests: {
+        src: ['tests/**/*.js']
+      }
+    },
+
+    sass: {
+      dist: {
         options: {
-          jshintrc: 'build/grunt/.jshintrc'
+          implementation: sass,
+          outputStyle: 'compressed'
         },
-        src    : 'Gruntfile.js'
+        files: {
+          'dist/css/select2.min.css': [
+            'src/scss/core.scss',
+            'src/scss/theme/default/layout.css'
+          ]
+        }
       },
-      core   : {
-        src: 'build/js/*.js'
-      },
-      demo   : {
-        src: 'dist/js/demo.js'
-      },
-      pages  : {
-        src: 'dist/js/pages/*.js'
+      dev: {
+        options: {
+          implementation: sass,
+          outputStyle: 'nested'
+        },
+        files: {
+          'dist/css/select2.css': [
+            'src/scss/core.scss',
+            'src/scss/theme/default/layout.css'
+          ]
+        }
       }
     },
 
-    jscs: {
-      options: {
-        config: 'build/js/.jscsrc'
+    requirejs: {
+      'dist': {
+        options: {
+          baseUrl: 'src/js',
+          optimize: 'none',
+          name: 'select2/core',
+          out: 'dist/js/select2.js',
+          include: includes,
+          namespace: 'S2',
+          paths: {
+            'almond': require.resolve('almond').slice(0, -3),
+            'jquery': 'jquery.shim',
+            'jquery-mousewheel': 'jquery.mousewheel.shim'
+          },
+          wrap: {
+            startFile: 'src/js/banner.start.js',
+            endFile: 'src/js/banner.end.js'
+          }
+        }
       },
-      core   : {
-        src: '<%= jshint.core.src %>'
+      'dist.full': {
+        options: {
+          baseUrl: 'src/js',
+          optimize: 'none',
+          name: 'select2/core',
+          out: 'dist/js/select2.full.js',
+          include: fullIncludes,
+          namespace: 'S2',
+          paths: {
+            'almond': require.resolve('almond').slice(0, -3),
+            'jquery': 'jquery.shim',
+            'jquery-mousewheel': require.resolve('jquery-mousewheel').slice(0, -3)
+          },
+          wrap: {
+            startFile: 'src/js/banner.start.js',
+            endFile: 'src/js/banner.end.js'
+          }
+        }
       },
-      pages  : {
-        src: '<%= jshint.pages.src %>'
+      'i18n': {
+        options: {
+          baseUrl: 'src/js/select2/i18n',
+          dir: 'dist/js/i18n',
+          paths: i18nPaths,
+          modules: i18nModules,
+          namespace: 'S2',
+          wrap: {
+            start: minifiedBanner + grunt.file.read('src/js/banner.start.js'),
+            end: grunt.file.read('src/js/banner.end.js')
+          }
+        }
       }
     },
 
-    // Validate CSS files
-    csslint: {
-      options: {
-        csslintrc: 'build/less/.csslintrc'
+    watch: {
+      js: {
+        files: [
+          'src/js/select2/**/*.js',
+          'tests/**/*.js'
+        ],
+        tasks: [
+          'compile',
+          'test',
+          'minify'
+        ]
       },
-      dist   : [
-        'dist/css/AdminLTE.css'
-      ]
-    },
-
-    // Validate Bootstrap HTML
-    bootlint: {
-      options: {
-        relaxerror: ['W005']
-      },
-      files  : ['pages/**/*.html', '*.html']
-    },
-
-    // Delete images in build directory
-    // After compressing the images in the build/img dir, there is no need
-    // for them
-    clean: {
-      build: ['build/img/*']
+      css: {
+        files: [
+          'src/scss/**/*.scss'
+        ],
+        tasks: [
+          'compile',
+          'minify'
+        ]
+      }
     }
   });
 
-  // Load all grunt tasks
-
-  // LESS Compiler
-  grunt.loadNpmTasks('grunt-contrib-less');
-  // Watch File Changes
-  grunt.loadNpmTasks('grunt-contrib-watch');
-  // Compress JS Files
-  grunt.loadNpmTasks('grunt-contrib-uglify');
-  // Include Files Within HTML
-  grunt.loadNpmTasks('grunt-includes');
-  // Optimize images
-  grunt.loadNpmTasks('grunt-image');
-  // Validate JS code
-  grunt.loadNpmTasks('grunt-contrib-jshint');
-  grunt.loadNpmTasks('grunt-jscs');
-  // Delete not needed files
-  grunt.loadNpmTasks('grunt-contrib-clean');
-  // Lint CSS
-  grunt.loadNpmTasks('grunt-contrib-csslint');
-  // Lint Bootstrap
-  grunt.loadNpmTasks('grunt-bootlint');
-  // Concatenate JS files
   grunt.loadNpmTasks('grunt-contrib-concat');
-  // Notify
-  grunt.loadNpmTasks('grunt-notify');
-  // Replace
-  grunt.loadNpmTasks('grunt-text-replace');
+  grunt.loadNpmTasks('grunt-contrib-connect');
+  grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-contrib-qunit');
+  grunt.loadNpmTasks('grunt-contrib-requirejs');
+  grunt.loadNpmTasks('grunt-contrib-uglify');
+  grunt.loadNpmTasks('grunt-contrib-watch');
 
-  // Linting task
-  grunt.registerTask('lint', ['jshint', 'csslint', 'bootlint']);
-  // JS task
-  grunt.registerTask('js', ['concat', 'uglify']);
-  // CSS Task
-  grunt.registerTask('css', ['less:development', 'less:production', 'replace']);
+  grunt.loadNpmTasks('grunt-sass');
 
-  // The default task (running 'grunt' in console) is 'watch'
-  grunt.registerTask('default', ['watch']);
+  grunt.registerTask('default', ['compile', 'test', 'minify']);
+
+  grunt.registerTask('compile', [
+    'requirejs:dist', 'requirejs:dist.full', 'requirejs:i18n',
+    'concat:dist', 'concat:dist.full',
+    'sass:dev'
+  ]);
+  grunt.registerTask('minify', ['uglify', 'sass:dist']);
+  grunt.registerTask('test', ['connect:tests', 'qunit', 'jshint']);
 };
