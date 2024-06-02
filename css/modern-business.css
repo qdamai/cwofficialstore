@@ -1,0 +1,107 @@
+/*!
+ * Start Bootstrap - Modern Business HTML Template (http://startbootstrap.com)
+ * Code licensed under the Apache License v2.0.
+ * For details, see http://www.apache.org/licenses/LICENSE-2.0.
+ */
+
+/* Global Styles */
+
+/* Global Styles dengan tema pink 'cute' */
+
+html,
+body {
+    height: 100%;
+    background-color: #FFFBF3; /* Warna latar belakang pink lembut */
+}
+
+body {
+    padding-top: 50px; /* Padding untuk navbar, sesuaikan jika perlu */
+    font-family: 'Open Sans', sans-serif; /* Font yang lebih modern */
+    color: #FFFBF3; /* Warna teks pink lembut */
+}
+
+.img-portfolio {
+    margin-bottom: 30px;
+    border: 3px solid #ff69b4; /* Border pink cerah */
+}
+
+.img-hover:hover {
+    opacity: 0.8;
+    transform: scale(1.05); /* Efek zoom saat di-hover */
+}
+
+/* Home Page Carousel */
+
+header.carousel {
+    height: 50%;
+}
+
+header.carousel .item,
+header.carousel .item.active,
+header.carousel .carousel-inner {
+    height: 100%;
+}
+
+header.carousel .fill {
+    width: 100%;
+    height: 100%;
+    background-position: center;
+    background-size: cover;
+    background-color: #ff69b4; /* Warna pink cerah */
+}
+
+/* 404 Page Styles */
+
+.error-404 {
+    font-size: 100px;
+    color: #ff69b4; /* Warna pink cerah */
+}
+
+/* Pricing Page Styles */
+
+.price {
+    display: block;
+    font-size: 50px;
+    line-height: 50px;
+    color: #ff69b4; /* Warna pink cerah */
+}
+
+.price sup {
+    top: -20px;
+    left: 2px;
+    font-size: 20px;
+    color: #FFFBF3; /* Warna pink lembut */
+}
+
+.period {
+    display: block;
+    font-style: italic;
+    color: #FFFBF3; /* Warna pink lembut */
+}
+
+/* Footer Styles */
+
+footer {
+    margin: 50px 0;
+    background-color: #ff69b4; /* Warna pink cerah */
+    color: #fff; /* Warna teks putih */
+}
+
+/* Responsive Styles */
+
+@media(max-width:991px) {
+    .customer-img,
+    .img-related {
+        margin-bottom: 30px;
+    }
+}
+
+@media(max-width:767px) {
+    .img-portfolio {
+        margin-bottom: 15px;
+    }
+
+    header.carousel .carousel {
+        height: 70%;
+    }
+}

@@ -1,0 +1,53 @@
+/* Override Bootstrap dan normalize.css dengan tema pink 'cute' */
+
+/* Warna tema */
+:root {
+  --pink-soft: #f9c1d9;
+  --pink-bright: #ff69b4;
+  --white: #ffffff;
+}
+
+/* Mengubah font dan warna dasar */
+html, body {
+  font-family: 'Open Sans', sans-serif;
+  color: var(--pink-soft);
+  background-color: var(--white);
+}
+
+/* Mengubah link menjadi pink saat di-hover */
+a:hover {
+  color: var(--pink-bright);
+}
+
+/* Mengubah warna background untuk elemen yang aktif atau di-hover */
+.navbar-inverse, .navbar-inverse .navbar-nav > .active > a, .navbar-inverse .navbar-nav > li > a:hover {
+  background-color: var(--pink-bright);
+  color: var(--white);
+}
+
+/* Mengubah warna footer */
+footer {
+  background-color: var(--pink-soft);
+  color: var(--white);
+}
+
+/* Mengubah warna teks untuk elemen mark */
+mark {
+  background-color: var(--pink-bright);
+  color: var(--pink-bright);
+}
+
+/* Mengubah warna border untuk fieldset */
+fieldset {
+  border-color: var(--pink-soft);
+}
+
+/* Mengubah warna untuk cetak */
+@media print {
+  a, a:visited, .btn > .caret, .dropup > .btn > .caret, .label {
+    color: var(--pink-bright) !important;
+  }
+  .table-bordered th, .table-bordered td {
+    border-color: var(--pink-soft) !important;
+  }
+}
